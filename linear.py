@@ -2,23 +2,19 @@ import numpy as np
 
 
 class LinearRegression:
-    def __init__(self, features_count, dataset):
+    def __init__(self, dataset):
 
         self.dataset = dataset
-        self.features_count = features_count
 
         self.inputs = self.dataset[..., :-1]
         self.outputs = self.dataset[..., -1:]
 
+        self.len_dataset, self.features_count = self.inputs.shape
         self.weights = np.random.uniform(0, 1, self.features_count + 1)
-        #self.weights = np.array([0, 1])
+
         self._epoch = 1
 
         self._prepared_input_cache = None
-
-    @property
-    def len_dataset(self):
-        return len(self.inputs)
 
     @property
     def prepared_output(self):
@@ -99,7 +95,7 @@ dataset = np.array([
     [(3 - 2.5) / 5, (500 - 500) / 1000, (40000 - 50000) / 100000],
 ])
 
-l = LinearRegression(2, dataset)
+l = LinearRegression(dataset)
 
 print(l.accuracy())
 print(l.prepared_input)
