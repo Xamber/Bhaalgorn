@@ -28,28 +28,18 @@ class LinearRegression:
 
     @property
     def prepared_input(self):
-        if self._prepared_input_cache == None:
-            self._prepared_input_cache = [1] * self.lenght_dataset + [list(i) for i in zip(*self.inputs)]
+        if self._prepared_input_cache is None:
+            ones = np.ones(len(self.dataset)).reshape(-1, 1)
+            self._prepared_input_cache = np.concatenate([ones, self.inputs], axis=1)
         return self._prepared_input_cache
 
-    def add_example(self, input_vector, output):
-
-        if not len(input_vector):
-            raise TrainingSetsException("Cannot add zero len vector")
-
-        if len(input_vector) != self.features_count:
-            raise TrainingSetsException("Len of vector and len of features count are not a same")
-
-        self.inputs = np.vstack([self.inputs, np.array(input_vector)])
-        self.outputs = np.vstack([self.outputs, np.array([output])])
-        self._prepared_input_cache = None
-
     def hypothesis(self, vector):
-        return self.weights[0] + sum([x * w for x, w in zip(vector, self.weights[1:])])
+        return np.dot(self.weights, np.concatenate([np.array([1]), vector])).sum()
 
     def error(self):
         predicted = [self.hypothesis(x) for x in self.inputs]
-        return (1 / (self.lenght_dataset * 2)) * sum([pow(h - y, 2) for h, y in zip(predicted, self.outputs)])
+        error = (1 / (self.lenght_dataset * 2)) * sum([pow(h - y, 2) for h, y in zip(predicted, self.outputs)])
+        return np.asscalar(error)
 
     def accuracy(self):
         accuracy = 100.00 - self.error() * 100.00
@@ -100,11 +90,11 @@ dataset = np.array([
 ])
 
 l = LinearRegression(2, dataset)
-
-
+print()
+tring = l.hypothesis([(1-2.5)/5, (1000-500)/1000])
 print(l.accuracy())
 print(l.prepared_input)
-l.train_gradient(1000)
+l.train_gradient(10000)
 print("_epoch: ", l._epoch)
 print("weights: ", l.weights)
 print("accuracy: ", l.accuracy())
