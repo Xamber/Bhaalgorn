@@ -3,12 +3,13 @@ import numpy as np
 
 class LinearRegression:
 
-
+    #hypothesis_func = np.vectorize(lambda vector, weights: np.dot(weights, vector).sum())
+    squared_error = np.vectorize(lambda x, y: pow(x - y, 2))
 
     def __init__(self, dataset):
         self.dataset = dataset
 
-        # Use last column as a output. Outers are input.
+        # Use last column as a output. Others are input.
         self.inputs = self.dataset[..., :-1]
         self.outputs = self.dataset[..., -1:]
 
@@ -30,28 +31,26 @@ class LinearRegression:
 
     def predicted(self):
         # Calculate training set with weight vector.
-        return
+        return np.dot(self.input_vectors, self.weights)
 
     def hypothesis(self, vector):
+        # Calculate value of input vector based on current weight
         return np.dot(self.weights, np.concatenate([np.ones(1), vector])).sum()
 
     def error(self):
-        squared_error = np.vectorize(lambda x, y: pow(x - y, 2))
-        predicted = [self.hypothesis(x) for x in self.inputs]
-        error = (1 / (self.len_dataset * 2)) * squared_error(predicted, self.output_vector).sum()
+        # Calculate squared error of training set. Scalar value.
+        error = (1 / (self.len_dataset * 2)) * self.squared_error(self.predicted(), self.output_vector).sum()
         return np.asscalar(error)
 
     def accuracy(self):
-        accuracy = 100.00 - self.error() * 100.00
-        return accuracy if accuracy >= 0 else 0
+        # Calculate accuracy based on error function
+        return 100.00 - self.error() * 100.00
 
     def gradient(self, speed):
         cost = np.vectorize(lambda h, y, x: (h - y) * x)
-
         new_weights = []
-        predicted = np.array([self.hypothesis(x) for x in self.inputs])
         for index, weight in enumerate(self.weights):
-            new_weights.append(weight - (speed * (1 / self.len_dataset) * cost(predicted, self.output_vector, np.swapaxes(self.input_vectors, 0, 1)[index]).sum()))
+            new_weights.append(weight - (speed * (1 / self.len_dataset) * cost(self.predicted(), self.output_vector, np.swapaxes(self.input_vectors, 0, 1)[index]).sum()))
 
         self.weights = new_weights
         self._epoch += 1
@@ -113,3 +112,6 @@ print("error: ", l.error())
 
 tring = l.hypothesis([(1-2.5)/5, (1000-500)/1000])
 print(tring * 100000 + 50000)
+
+print(l.predicted())
+print(l.output_vector)
