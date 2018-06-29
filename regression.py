@@ -65,6 +65,11 @@ class LinearRegression:
         self.weights = new_weights
         self._epoch += 1
 
+    def normal_equation(self):
+        transonded = self.input_vectors.T
+        theta = np.linalg.inv(transonded.dot(self.input_vectors)).dot(transonded).dot(self.outputs)
+        self.weights = theta.flatten()
+
     def train_gradient(self, timeout=3000):
         speed = 0.1
         iteration = 0
@@ -105,3 +110,12 @@ print("Accuracy: ", l.accuracy)
 print("Error: ", l.error)
 
 print(l.hypothesis([(1-2.5)/5, (1000-500)/1000]) * 100000 + 50000)
+
+
+n = LinearRegression(training_set)
+n.normal_equation()
+print("Weights: ", n.weights)
+print("Accuracy: ", n.accuracy)
+print("Error: ", n.error)
+
+print(n.hypothesis([(1-2.5)/5, (1000-500)/1000]) * 100000 + 50000)
