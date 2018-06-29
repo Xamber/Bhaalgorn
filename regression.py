@@ -27,27 +27,35 @@ class LinearRegression:
         # - Flatten output - use in gradient
         self.output_vector = self.outputs.flatten()
 
+    @property
     def predicted(self):
         # Calculate training set with weight vector.
         return np.dot(self.input_vectors, self.weights)
+
+    @property
+    def error(self):
+        # Calculate squared error of training set. Scalar value.
+        error = (1 / (self.len_dataset * 2)) * self.squared_error(self.predicted, self.output_vector).sum()
+        return np.asscalar(error)
+
+    @property
+    def accuracy(self):
+        # Calculate accuracy based on error function
+        return 100.00 - self.error * 100.00
 
     def hypothesis(self, vector):
         # Calculate value of input vector based on current weight
         return np.dot(self.weights, np.concatenate([np.ones(1), vector])).sum()
 
-    def error(self):
-        # Calculate squared error of training set. Scalar value.
-        error = (1 / (self.len_dataset * 2)) * self.squared_error(self.predicted(), self.output_vector).sum()
-        return np.asscalar(error)
-
-    def accuracy(self):
-        # Calculate accuracy based on error function
-        return 100.00 - self.error() * 100.00
+    def calcutlate(self, vector):
+        # proxy method for hypothesis
+        return self.hypothesis(vector)
 
     def gradient(self, speed):
         new_weights = []
         for index, weight in enumerate(self.weights):
-            new_weights.append(weight - (speed * (1 / self.len_dataset) * self.cost(self.predicted(), self.output_vector, np.swapaxes(self.input_vectors, 0, 1)[index]).sum()))
+            cost = self.cost(self.predicted, self.output_vector, np.swapaxes(self.input_vectors, 0, 1)[index]).sum()
+            new_weights.append(weight - (speed * (1 / self.len_dataset) * cost))
 
         self.weights = new_weights
         self._epoch += 1
@@ -56,12 +64,10 @@ class LinearRegression:
         speed = 0.1
         iteration = 0
         latest_error = 1
-
         while iteration <= timeout:
-            error = self.error()
+            error = self.error
             if error < 0.0001:
                 break
-
             if error > latest_error:
                 speed = speed * 0.5
             self.gradient(speed)
@@ -70,7 +76,7 @@ class LinearRegression:
             iteration += 1
 
 
-dataset = np.array([
+training_set = np.array([
     [1, 1+10],
     [2, 2+10],
     [3, 3+10],
@@ -82,7 +88,7 @@ dataset = np.array([
     [9, 9+10],
 ])
 
-dataset = np.array([
+training_set = np.array([
     [(1 - 2.5) / 5, (500 - 500) / 1000, (24000 - 50000) / 100000],
     [(1 - 2.5) / 5, (1000 - 500) / 1000, (22000 - 50000) / 100000],
     [(2 - 2.5) / 5, (500 - 500) / 1000, (32000 - 50000) / 100000],
@@ -95,19 +101,16 @@ dataset = np.array([
     [(3 - 2.5) / 5, (500 - 500) / 1000, (40000 - 50000) / 100000],
 ])
 
-l = LinearRegression(dataset)
+l = LinearRegression(training_set)
 
-print(l.accuracy())
+print(l.accuracy)
 print(l.input_vectors)
 l.train_gradient(3000)
 
 print("_epoch: ", l._epoch)
 print("weights: ", l.weights)
-print("accuracy: ", l.accuracy())
-print("error: ", l.error())
+print("accuracy: ", l.accuracy)
+print("error: ", l.error)
 
 tring = l.hypothesis([(1-2.5)/5, (1000-500)/1000])
 print(tring * 100000 + 50000)
-
-print(l.predicted())
-print(l.output_vector)
