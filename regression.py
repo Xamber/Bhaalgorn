@@ -24,8 +24,12 @@ class LinearRegression:
         # Some prepared matrix/vectors for future usage.
         # - Matrix of input data with 1 as a first value: Use in prediction of training inputs and gradient.
         self.input_vectors = np.concatenate([np.ones((self.len_dataset, 1)), self.inputs], axis=1)
-        # - Flatten output - use in gradient
+
+        # - Flatten output: use in gradient
         self.output_vector = self.outputs.flatten()
+
+        # - Swapped input vectors: used in gradient
+        self.swapped_input = np.swapaxes(self.input_vectors, 0, 1)
 
     @property
     def predicted(self):
@@ -47,14 +51,15 @@ class LinearRegression:
         # Calculate value of input vector based on current weight
         return np.dot(self.weights, np.concatenate([np.ones(1), vector])).sum()
 
-    def calcutlate(self, vector):
-        # proxy method for hypothesis
+    def calculate(self, vector):
+        # proxy method for hypothesis.
+        # td: will be used as a calc with scalling variables
         return self.hypothesis(vector)
 
     def gradient(self, speed):
         new_weights = []
         for index, weight in enumerate(self.weights):
-            cost = self.cost(self.predicted, self.output_vector, np.swapaxes(self.input_vectors, 0, 1)[index]).sum()
+            cost = self.cost(self.predicted, self.output_vector, self.swapped_input[index]).sum()
             new_weights.append(weight - (speed * (1 / self.len_dataset) * cost))
 
         self.weights = new_weights
