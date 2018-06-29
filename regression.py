@@ -82,19 +82,9 @@ class LinearRegression:
 
 
 training_set = np.array([
-    [1, 1+10],
-    [2, 2+10],
-    [3, 3+10],
-    [4, 4+10],
-    [5, 5+10],
-    [6, 6+10],
-    [7, 7+10],
-    [8, 8+10],
-    [9, 9+10],
-])
-
-training_set = np.array([
     [(1 - 2.5) / 5, (500 - 500) / 1000, (24000 - 50000) / 100000],
+    [(1 - 2.5) / 5, (1000 - 500) / 1000, (22000 - 50000) / 100000],
+    [(1 - 2.5) / 5, (1000 - 500) / 1000, (22000 - 50000) / 100000],
     [(1 - 2.5) / 5, (1000 - 500) / 1000, (22000 - 50000) / 100000],
     [(2 - 2.5) / 5, (500 - 500) / 1000, (32000 - 50000) / 100000],
     [(2 - 2.5) / 5, (1000 - 500) / 1000, (29000 - 50000) / 100000],
@@ -107,15 +97,11 @@ training_set = np.array([
 ])
 
 l = LinearRegression(training_set)
+l.train_gradient()
 
-print(l.accuracy)
-print(l.input_vectors)
-l.train_gradient(3000)
+print("Epoch: ", l._epoch)
+print("Weights: ", l.weights)
+print("Accuracy: ", l.accuracy)
+print("Error: ", l.error)
 
-print("_epoch: ", l._epoch)
-print("weights: ", l.weights)
-print("accuracy: ", l.accuracy)
-print("error: ", l.error)
-
-tring = l.hypothesis([(1-2.5)/5, (1000-500)/1000])
-print(tring * 100000 + 50000)
+print(l.hypothesis([(1-2.5)/5, (1000-500)/1000]) * 100000 + 50000)
