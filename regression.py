@@ -2,9 +2,8 @@ import numpy as np
 
 
 class LinearRegression:
-
-    #hypothesis_func = np.vectorize(lambda vector, weights: np.dot(weights, vector).sum())
     squared_error = np.vectorize(lambda x, y: pow(x - y, 2))
+    cost = np.vectorize(lambda h, y, x: (h - y) * x)
 
     def __init__(self, dataset):
         self.dataset = dataset
@@ -28,7 +27,6 @@ class LinearRegression:
         # - Flatten output - use in gradient
         self.output_vector = self.outputs.flatten()
 
-
     def predicted(self):
         # Calculate training set with weight vector.
         return np.dot(self.input_vectors, self.weights)
@@ -47,10 +45,9 @@ class LinearRegression:
         return 100.00 - self.error() * 100.00
 
     def gradient(self, speed):
-        cost = np.vectorize(lambda h, y, x: (h - y) * x)
         new_weights = []
         for index, weight in enumerate(self.weights):
-            new_weights.append(weight - (speed * (1 / self.len_dataset) * cost(self.predicted(), self.output_vector, np.swapaxes(self.input_vectors, 0, 1)[index]).sum()))
+            new_weights.append(weight - (speed * (1 / self.len_dataset) * self.cost(self.predicted(), self.output_vector, np.swapaxes(self.input_vectors, 0, 1)[index]).sum()))
 
         self.weights = new_weights
         self._epoch += 1
@@ -71,7 +68,6 @@ class LinearRegression:
 
             latest_error = error
             iteration += 1
-
 
 
 dataset = np.array([
