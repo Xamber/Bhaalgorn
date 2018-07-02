@@ -2,8 +2,8 @@ import numpy as np
 
 
 class LinearRegression:
-    squared_error = np.vectorize(lambda x, y: pow(x - y, 2))
-    cost = np.vectorize(lambda h, y, x: (h - y) * x)
+    squared_error = np.vectorize(lambda h, y: pow(h - y, 2))
+    gradient_form = np.vectorize(lambda h, y, x: (h - y) * x)
 
     def __init__(self, dataset):
         self.dataset = dataset
@@ -53,24 +53,27 @@ class LinearRegression:
 
     def calculate(self, vector):
         # proxy method for hypothesis.
-        # td: will be used as a calc with scalling variables
+        # td: will be used as a calc with scaling variables
         return self.hypothesis(vector)
 
     def gradient(self, speed):
+        # Gradient Descent iteration function
         new_weights = []
         for index, weight in enumerate(self.weights):
-            cost = self.cost(self.predicted, self.output_vector, self.swapped_input[index]).sum()
-            new_weights.append(weight - (speed * (1 / self.len_dataset) * cost))
+            gradient_form = self.gradient_form(self.predicted, self.output_vector, self.swapped_input[index]).sum()
+            new_weights.append(weight - speed / self.len_dataset * gradient_form)
 
         self.weights = new_weights
         self._epoch += 1
 
     def normal_equation(self):
-        transonded = self.input_vectors.T
-        theta = np.linalg.inv(transonded.dot(self.input_vectors)).dot(transonded).dot(self.outputs)
+        # Normal Equation method
+        transposed = self.input_vectors.T
+        theta = np.linalg.inv(transposed.dot(self.input_vectors)).dot(transposed).dot(self.outputs)
         self.weights = theta.flatten()
 
     def train_gradient(self, timeout=3000):
+        # Gradient Descent method with automation decreasing speed rate
         speed = 0.1
         iteration = 0
         latest_error = 1
