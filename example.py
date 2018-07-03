@@ -62,10 +62,10 @@ logical.train_gradient(3000)
 
 print(logical.calculate([0, 0]))
 print(logical.calculate([1, 1]))
-
-print("Weights: ", linear_with_normal.weights)
-print("Accuracy: ", linear_with_normal.accuracy)
-print("Error: ", linear_with_normal.error)
+print("Epoch: ", logical._epoch)
+print("Weights: ", logical.weights)
+print("Accuracy: ", logical.accuracy)
+print("Error: ", logical.error)
 
 print(logical.predicted)
 print(logical.output_vector)

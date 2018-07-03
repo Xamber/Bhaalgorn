@@ -1,12 +1,9 @@
 import numpy as np
-from math import log
+from math import log10
 
 
 def _error_form(h, y):
-    if h <= 0:
-        h = 0.00001
-
-    return y * log(h) if y >= 0.5 else (1 - y) * log(1 - h)
+    return -log10(h) if y >= 0.5 else log10(abs(1.00001 - h))
 
 
 class LinearRegression:
@@ -33,7 +30,7 @@ class LinearRegression:
         # - Matrix of input data with 1 as a first value: Use in prediction of training inputs and gradient.
         self.input_vectors = np.concatenate([np.ones((self.len_dataset, 1)), self.inputs], axis=1)
 
-        # - Flatten output: use in gradient
+        # - Flatten output: use in gradient.
         self.output_vector = self.outputs.flatten()
 
         # - Swapped input vectors: used in gradient
@@ -52,7 +49,7 @@ class LinearRegression:
 
     @property
     def accuracy(self):
-        # Calculate accuracy based on error function
+        # Calculate accuracy based on error function.
         return 100.00 - self.error * 100.00
 
     def hypothesis(self, vector):
@@ -61,11 +58,11 @@ class LinearRegression:
 
     def calculate(self, vector):
         # proxy method for hypothesis.
-        # td: will be used as a calc with scaling variables
+        # td: will be used as a calc with scaling variables.
         return self.hypothesis(vector)
 
     def gradient(self, speed):
-        # Gradient Descent iteration function
+        # Gradient Descent iteration function.
         new_weights = []
         for index, weight in enumerate(self.weights):
             gradient_form = self.gradient_form(self.predicted, self.output_vector, self.swapped_input[index]).sum()
@@ -81,13 +78,13 @@ class LinearRegression:
         self.weights = theta.flatten()
 
     def train_gradient(self, timeout=3000):
-        # Gradient Descent method with automation decreasing speed rate
+        # Gradient Descent method with automation decreasing speed rate.
         speed = 0.1
         iteration = 0
         latest_error = 1
         while iteration <= timeout:
             error = self.error
-            if error < 0.0001:
+            if -0.0001 < error < 0.0001:
                 break
             if error > latest_error:
                 speed = speed * 0.5
@@ -110,11 +107,11 @@ class LogisticRegression(LinearRegression):
         raise NotImplemented
 
     def hypothesis(self, vector):
-        # Calculate value of input vector based on current weight
+        # Calculate value of input vector based on current weight.
         return 1 if np.dot(self.weights, np.concatenate([np.ones(1), vector])).sum() >= 0.5 else 0
 
     @property
     def error(self):
         # Calculate squared error of training set. Scalar value.
-        error = (-1 / self.len_dataset) * self.error_form(self.predicted, self.output_vector).sum()
+        error = (1 / self.len_dataset) * self.error_form(self.predicted, self.output_vector).sum()
         return np.asscalar(error)
