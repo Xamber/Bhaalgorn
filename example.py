@@ -1,5 +1,5 @@
 import numpy as np
-from regression import LinearRegression
+from regression import LinearRegression, LogisticRegression
 
 # Fake training set for property rental with feature scaling
 training_set_rent = np.array([
@@ -38,3 +38,35 @@ print("Error: ", linear_with_normal.error)
 
 # Try to predict something
 print(linear_with_normal.hypothesis([(1 - 2.5) / 5, (1000 - 500) / 1000]) * 100000 + 50000)
+
+print("================================")
+
+training_set_logic = np.array([
+    [0.5, 1.0, 1],
+    [0.5, 0.6, 1],
+    [0.6, 0.5, 1],
+    [1.0, 1.0, 1],
+    [0.1, 0.1, 0],
+    [0.1, 0.3, 0],
+    [0.2, 0.1, 0],
+    [0.0, 0.0, 0],
+    [0.4, 0.4, 0],
+])
+
+
+logical = LogisticRegression(training_set_logic)
+print(logical.predicted)
+print(logical.output_vector)
+
+logical.train_gradient(3000)
+
+print(logical.calculate([0, 0]))
+print(logical.calculate([1, 1]))
+
+print("Weights: ", linear_with_normal.weights)
+print("Accuracy: ", linear_with_normal.accuracy)
+print("Error: ", linear_with_normal.error)
+
+print(logical.predicted)
+print(logical.output_vector)
+

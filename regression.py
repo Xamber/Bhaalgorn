@@ -1,8 +1,16 @@
 import numpy as np
+from math import log
+
+
+def _error_form(h, y):
+    if h <= 0:
+        h = 0.00001
+
+    return y * log(h) if y >= 0.5 else (1 - y) * log(1 - h)
 
 
 class LinearRegression:
-    squared_error = np.vectorize(lambda h, y: pow(h - y, 2))
+    error_form = np.vectorize(lambda h, y: pow(h - y, 2))
     gradient_form = np.vectorize(lambda h, y, x: (h - y) * x)
 
     def __init__(self, dataset):
@@ -39,7 +47,7 @@ class LinearRegression:
     @property
     def error(self):
         # Calculate squared error of training set. Scalar value.
-        error = (1 / (self.len_dataset * 2)) * self.squared_error(self.predicted, self.output_vector).sum()
+        error = (1 / (self.len_dataset * 2)) * self.error_form(self.predicted, self.output_vector).sum()
         return np.asscalar(error)
 
     @property
@@ -87,3 +95,26 @@ class LinearRegression:
 
             latest_error = error
             iteration += 1
+
+
+class LogisticRegression(LinearRegression):
+
+    error_form = np.vectorize(_error_form)
+
+    @property
+    def predicted(self):
+        # Calculate training set with weight vector.
+        return [1.0 if x >= 0.5 else 0.0 for x in super().predicted]
+
+    def normal_equation(self):
+        raise NotImplemented
+
+    def hypothesis(self, vector):
+        # Calculate value of input vector based on current weight
+        return 1 if np.dot(self.weights, np.concatenate([np.ones(1), vector])).sum() >= 0.5 else 0
+
+    @property
+    def error(self):
+        # Calculate squared error of training set. Scalar value.
+        error = (-1 / self.len_dataset) * self.error_form(self.predicted, self.output_vector).sum()
+        return np.asscalar(error)
