@@ -26,11 +26,10 @@ class LinearRegression:
         # - Flatten output: use in error.
         self.output_vector = self.outputs.flatten()
 
-        # - Swapped input vectors: used in gradient
-        self.swapped_input = np.swapaxes(self.input_vectors, 0, 1)
-        # - # Clone output vector to matrix with len(weights) rows
+        # - Transosed input vectors: used in gradient and normal equation
+        self.trans_input = np.transpose(self.input_vectors)
+        # - Clone output vector to matrix with len(weights) rows
         self.cloned_output = np.vstack([self.output_vector] * len(self.weights))
-
 
     @property
     def predicted(self):
@@ -62,13 +61,13 @@ class LinearRegression:
 
     def gradient(self, speed):
         # Gradient Descent iteration function.
-        self.weights = self.weights - ((self.cloned_predicted - self.cloned_output) * self.swapped_input).sum(axis=1) * speed / self.len_dataset
+        permit = speed / self.len_dataset
+        self.weights -= ((self.cloned_predicted - self.cloned_output) * self.trans_input).sum(axis=1) * permit
         self.epoch += 1
 
     def normal_equation(self):
         # Normal Equation method
-        transposed = self.input_vectors.T
-        theta = np.linalg.inv(transposed.dot(self.input_vectors)).dot(transposed).dot(self.outputs)
+        theta = np.linalg.inv(self.trans_input.dot(self.input_vectors)).dot(self.trans_input).dot(self.outputs)
         self.weights = theta.flatten()
 
     def train_gradient(self, timeout=3000):
