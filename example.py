@@ -21,10 +21,7 @@ training_set_rent = np.array([
 linear = LinearRegression(training_set_rent)
 linear.train_gradient()
 
-print("Epoch: ", linear.epoch)
-print("Weights: ", linear.weights)
-print("Accuracy: ", linear.accuracy)
-print("Error: ", linear.error)
+linear.show_info()
 
 # Try to predict something
 print(linear.hypothesis([(1 - 2.5) / 5, (1000 - 500) / 1000]) * 100000 + 50000)
@@ -32,14 +29,8 @@ print(linear.hypothesis([(1 - 2.5) / 5, (1000 - 500) / 1000]) * 100000 + 50000)
 # Create and train LR with normal equation
 linear_with_normal = LinearRegression(training_set_rent)
 linear_with_normal.normal_equation()
-print("Weights: ", linear_with_normal.weights)
-print("Accuracy: ", linear_with_normal.accuracy)
-print("Error: ", linear_with_normal.error)
 
-# Try to predict something
-print(linear_with_normal.hypothesis([(1 - 2.5) / 5, (1000 - 500) / 1000]) * 100000 + 50000)
-
-print("================================")
+linear_with_normal.show_info()
 
 training_set_logic = np.array([
     [0.5, 1.0, 1],
@@ -55,18 +46,6 @@ training_set_logic = np.array([
 
 
 logical = LogisticRegression(training_set_logic)
-print(logical.predicted)
-print(logical.output_vector)
-
 logical.train_gradient(3000)
 
-print(logical.calculate([0, 0]))
-print(logical.calculate([1, 1]))
-print("Epoch: ", logical.epoch)
-print("Weights: ", logical.weights)
-print("Accuracy: ", logical.accuracy)
-print("Error: ", logical.error)
-
-print(logical.predicted)
-print(logical.output_vector)
-
+logical.show_info()

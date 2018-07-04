@@ -2,7 +2,6 @@ import numpy as np
 
 
 class LinearRegression:
-    gradient_form = np.vectorize(lambda h, y, x: (h - y) * x)
 
     def __init__(self, dataset):
         self.dataset = dataset
@@ -30,6 +29,19 @@ class LinearRegression:
         self.trans_input = np.transpose(self.input_vectors)
         # - Clone output vector to matrix with len(weights) rows
         self.cloned_output = np.tile(self.output_vector, (len(self.weights), 1))
+
+    def show_info(self, show_predicted_vs_putput=False):
+        predicted_vs_putput = ""
+        if show_predicted_vs_putput:
+            predicted_vs_putput = [f"{p} - {o}\n" for p, o in zip(self.predicted, self.output_vector)]
+
+        print(f"========== {self.__class__.__name__} ========= \n"
+              f"Count of Features: {self.features_count} | Len of Dataset: {self.len_dataset} | Epoch: {self.epoch} \n"
+              f"Weights: {self.weights}\n"
+              f"Accuracy: {round(self.accuracy, 6)}% | Error: {self.error}\n"
+              f"{''.join(predicted_vs_putput)}"
+              f"=====================================\n"
+              )
 
     @property
     def predicted(self):
