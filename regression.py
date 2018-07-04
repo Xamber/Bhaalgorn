@@ -18,7 +18,7 @@ class LinearRegression:
         self.weights = np.random.uniform(0, 1, self.features_count + 1)
 
         # Epoch of training.
-        self._epoch = 1
+        self.epoch = 1
 
         # Some prepared matrix/vectors for future usage.
         # - Matrix of input data with 1 as a first value: Use in prediction of training inputs and gradient.
@@ -61,7 +61,7 @@ class LinearRegression:
             new_weights.append(weight - speed / self.len_dataset * gradient_form)
 
         self.weights = new_weights
-        self._epoch += 1
+        self.epoch += 1
 
     def normal_equation(self):
         # Normal Equation method

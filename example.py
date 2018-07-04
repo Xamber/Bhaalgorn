@@ -21,7 +21,7 @@ training_set_rent = np.array([
 linear = LinearRegression(training_set_rent)
 linear.train_gradient()
 
-print("Epoch: ", linear._epoch)
+print("Epoch: ", linear.epoch)
 print("Weights: ", linear.weights)
 print("Accuracy: ", linear.accuracy)
 print("Error: ", linear.error)
@@ -62,7 +62,7 @@ logical.train_gradient(3000)
 
 print(logical.calculate([0, 0]))
 print(logical.calculate([1, 1]))
-print("Epoch: ", logical._epoch)
+print("Epoch: ", logical.epoch)
 print("Weights: ", logical.weights)
 print("Accuracy: ", logical.accuracy)
 print("Error: ", logical.error)
