@@ -26,7 +26,7 @@ class LinearRegression:
         # - Flatten output: use in error.
         self.output_vector = self.outputs.flatten()
 
-        # - Transosed input vectors: used in gradient and normal equation
+        # - Tranposed input vectors: used in gradient and normal equation
         self.trans_input = np.transpose(self.input_vectors)
         # - Clone output vector to matrix with len(weights) rows
         self.cloned_output = np.tile(self.output_vector, (len(self.weights), 1))
