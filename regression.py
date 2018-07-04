@@ -29,7 +29,7 @@ class LinearRegression:
         # - Transosed input vectors: used in gradient and normal equation
         self.trans_input = np.transpose(self.input_vectors)
         # - Clone output vector to matrix with len(weights) rows
-        self.cloned_output = np.vstack([self.output_vector] * len(self.weights))
+        self.cloned_output = np.tile(self.output_vector, (len(self.weights), 1))
 
     @property
     def predicted(self):
@@ -39,7 +39,7 @@ class LinearRegression:
     @property
     def cloned_predicted(self):
         # Clone predicted vector to matrix with len(weights) rows
-        return np.vstack([self.predicted] * len(self.weights))
+        return np.tile(self.predicted, (len(self.weights), 1))
 
     @property
     def error(self):
