@@ -1,13 +1,7 @@
 import numpy as np
-from math import log10
-
-
-def _error_form(h, y):
-    return -log10(h) if y >= 0.5 else log10(abs(1.00001 - h))
 
 
 class LinearRegression:
-    error_form = np.vectorize(lambda h, y: pow(h - y, 2))
     gradient_form = np.vectorize(lambda h, y, x: (h - y) * x)
 
     def __init__(self, dataset):
@@ -39,13 +33,12 @@ class LinearRegression:
     @property
     def predicted(self):
         # Calculate training set with weight vector.
-        return np.dot(self.input_vectors, self.weights)
+        return np.array([self.hypothesis(x) for x in self.inputs])
 
     @property
     def error(self):
         # Calculate squared error of training set. Scalar value.
-        error = (1 / (self.len_dataset * 2)) * self.error_form(self.predicted, self.output_vector).sum()
-        return np.asscalar(error)
+        return (1 / (self.len_dataset * 2)) * np.power(self.predicted - self.output_vector, 2).sum()
 
     @property
     def accuracy(self):
@@ -58,7 +51,6 @@ class LinearRegression:
 
     def calculate(self, vector):
         # proxy method for hypothesis.
-        # td: will be used as a calc with scaling variables.
         return self.hypothesis(vector)
 
     def gradient(self, speed):
@@ -96,22 +88,16 @@ class LinearRegression:
 
 class LogisticRegression(LinearRegression):
 
-    error_form = np.vectorize(_error_form)
-
-    @property
-    def predicted(self):
-        # Calculate training set with weight vector.
-        return [1.0 if x >= 0.5 else 0.0 for x in super().predicted]
-
     def normal_equation(self):
         raise NotImplemented
 
     def hypothesis(self, vector):
-        # Calculate value of input vector based on current weight.
-        return 1 if np.dot(self.weights, np.concatenate([np.ones(1), vector])).sum() >= 0.5 else 0
+        # Calculate value of input vector based on current weight. Sigmoid activation.
+        doted = np.dot(self.weights, np.concatenate([np.ones(1), vector]))
+        return 1.0 / (1 + np.exp(-doted))
 
     @property
     def error(self):
-        # Calculate squared error of training set. Scalar value.
-        error = (1 / self.len_dataset) * self.error_form(self.predicted, self.output_vector).sum()
-        return np.asscalar(error)
+        # Calculate error of training set. Scalar value.
+        cost = -self.output_vector * np.log(self.predicted) - (1 - self.output_vector) * np.log(1 - self.predicted)
+        return cost.sum() / self.len_dataset
