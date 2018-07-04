@@ -23,17 +23,24 @@ class LinearRegression:
         # Some prepared matrix/vectors for future usage.
         # - Matrix of input data with 1 as a first value: Use in prediction of training inputs and gradient.
         self.input_vectors = np.concatenate([np.ones((self.len_dataset, 1)), self.inputs], axis=1)
-
-        # - Flatten output: use in gradient.
+        # - Flatten output: use in error.
         self.output_vector = self.outputs.flatten()
 
         # - Swapped input vectors: used in gradient
         self.swapped_input = np.swapaxes(self.input_vectors, 0, 1)
+        # - # Clone output vector to matrix with len(weights) rows
+        self.cloned_output = np.vstack([self.output_vector] * len(self.weights))
+
 
     @property
     def predicted(self):
         # Calculate training set with weight vector.
         return np.array([self.hypothesis(x) for x in self.inputs])
+
+    @property
+    def cloned_predicted(self):
+        # Clone predicted vector to matrix with len(weights) rows
+        return np.vstack([self.predicted] * len(self.weights))
 
     @property
     def error(self):
@@ -55,12 +62,7 @@ class LinearRegression:
 
     def gradient(self, speed):
         # Gradient Descent iteration function.
-        new_weights = []
-        for index, weight in enumerate(self.weights):
-            gradient_form = self.gradient_form(self.predicted, self.output_vector, self.swapped_input[index]).sum()
-            new_weights.append(weight - speed / self.len_dataset * gradient_form)
-
-        self.weights = new_weights
+        self.weights = self.weights - ((self.cloned_predicted - self.cloned_output) * self.swapped_input).sum(axis=1) * speed / self.len_dataset
         self.epoch += 1
 
     def normal_equation(self):
