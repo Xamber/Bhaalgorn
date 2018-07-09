@@ -59,10 +59,6 @@ training_nn_xor = np.array([
     [1., 1., 1.],
 ])
 
-nn = NeuralNetwork(training_nn_xor, (2, 3, 1))
-nn.train(10000, speed=0.4)
-
-print(nn.hypothesis([0.00, 0.00]))
-print(nn.hypothesis([0.00, 1.00]))
-print(nn.hypothesis([1.00, 0.00]))
-print(nn.hypothesis([1.00, 1.00]))
+nn = NeuralNetwork(training_nn_xor, (2, 2, 1))
+nn.train(10000)
+print(nn.predicted)
