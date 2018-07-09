@@ -1,5 +1,8 @@
 import numpy as np
 from regression import LinearRegression, LogisticRegression
+from neuralnetwork import NeuralNetwork
+
+np.random.seed(123)
 
 # Fake training set for property rental with feature scaling
 training_set_rent = np.array([
@@ -44,8 +47,22 @@ training_set_logic = np.array([
     [0.4, 0.4, 0],
 ])
 
-
 logical = LogisticRegression(training_set_logic)
 logical.train_gradient(3000)
 
 logical.show_info()
+
+training_nn_xor = np.array([
+    [0.00, 0.00, 1.],
+    [0.00, 1., 0.00],
+    [1., 0.00, 0.00],
+    [1., 1., 1.],
+])
+
+nn = NeuralNetwork(training_nn_xor, (2, 3, 1))
+nn.train(10000, speed=0.4)
+
+print(nn.hypothesis([0.00, 0.00]))
+print(nn.hypothesis([0.00, 1.00]))
+print(nn.hypothesis([1.00, 0.00]))
+print(nn.hypothesis([1.00, 1.00]))
