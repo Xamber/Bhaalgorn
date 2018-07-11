@@ -58,6 +58,10 @@ class BaseRegression:
         # Clone predicted vector to matrix with len(weights) rows
         return np.tile(self.predicted, (len(self.weights), 1))
 
+    @property
+    def regularization(self, delta=0.1):
+        return (delta / self.len_dataset) * np.power(self.weights, 2).sum()
+
     def gradient(self, speed):
         # Gradient Descent iteration function.
         permit = speed / self.len_dataset
