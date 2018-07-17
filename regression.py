@@ -127,3 +127,24 @@ class LogisticRegression(BaseRegression):
         # Calculate error of training set. Scalar value.
         cost = -self.output_vector * np.log(self.predicted) - (1 - self.output_vector) * np.log(1 - self.predicted)
         return cost.sum() / self.len_dataset
+
+
+class SVM(LogisticRegression):
+
+    def __init__(self, dataset):
+        super().__init__(dataset)
+        self.weights = np.zeros(self.features_count)
+        self.weights = np.random.uniform(0, 1, self.features_count)
+
+    def hypothesis(self, vector):
+        return np.dot(self.weights, vector)
+
+    def train_gradient(self, timeout=30000):
+        # Gradient Descent method with automation decreasing speed rate.
+        speed = 1
+        for i in range(1, timeout):
+            for x, y in zip(self.inputs, self.outputs):
+                if y * self.hypothesis(x) < 1:
+                    self.weights = self.weights + speed * ((y * x) - (2 * (1 / timeout) * self.weights))
+                else:
+                    self.weights = self.weights + speed * (-2 * (1 / timeout) * self.weights)
